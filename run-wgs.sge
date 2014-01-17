@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+runCA -d /home/rmccoy/bogart_0.3/ -p bogart_0.3 -s wgs_specfile.spec melanogaster-filter.frg
