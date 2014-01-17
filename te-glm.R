@@ -18,8 +18,8 @@ standardize <- function(x, by = NULL){
 	return(out)
 }
 
-te.results <- read.table("~/Dropbox/fly assembly ms - genome research/analysis/TE-GLM/TE.results", sep = '\t', header = FALSE, stringsAsFactors = FALSE)
-te.data <- read.table("~/Dropbox/fly assembly ms - genome research/analysis/TE-GLM/TE-data.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
+te.results <- read.table("TE.results", sep = '\t', header = FALSE, stringsAsFactors = FALSE)
+te.data <- read.table("TE-data.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
 
 names(te.results) <- c("name", "haveit")
 te.merge <- merge(te.results, te.data, by = "name", all.x = TRUE)
@@ -44,6 +44,7 @@ haveit.f <- aggregate( formula = haveit~family, data = te.merge, FUN = mean )
 length.f <- aggregate( formula = length~family, data = te.merge, FUN = mean )
 copies.f <- aggregate( formula = copies~family, data = te.merge, FUN = mean )
 divergence.f <- aggregate( formula = divergence~family, data = te.merge, FUN = mean )
+#divergence estimate failed on Fw3
 divergence.f$divergence[divergence.f$family=="Fw3"]<-NA
 coverage.f <- aggregate( formula = coverage~family, data = te.merge, FUN = mean )
 
@@ -102,6 +103,3 @@ b<-ggplot(te.merge, aes(x=divergence, y=haveit)) + geom_jitter(aes(color=factor(
 coverage.p<-predict_g1(seq(12, 22, .5), "coverage")
 c<-ggplot(te.merge, aes(x=coverage, y=haveit)) + geom_jitter(aes(color=factor(family)), size=1.5) + theme(legend.position = "none") + geom_line(data=coverage.p, aes(x=coverage, y=haveit), size=1.5) + xlab("Depth of coverage") + ylab("Prob. accurately assembled")
 
-source('~/Dropbox/fly assembly ms - genome research/Analysis/TE-GLM/multiplot.R', chdir = TRUE)
-
-multiplot(a,b,c, cols=3)
