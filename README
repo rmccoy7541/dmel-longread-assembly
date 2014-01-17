@@ -1,0 +1,15 @@
+# de novo genome assembly
+run-wgs.sge				command used to run CA
+wgs_specfile.spec			specfile upon which CA depends
+melanogaster-filter.frg			frg file that gives additional parameters and points to fastq used for assembly
+
+# analysis of long-read data
+generate-error-counts.sh		commands used to generate the error profiles used as input for error-rates.R, also used to find positions of mismatches to compare to DGRP
+error-rates.R				R script to plot position-dependent error profiles of long reads
+
+# analysis of assembly
+alignment-stats.sh			commands used to generate alignment results for Table 2
+te-glm.R				R script to generate GLM and GLMM to test features of TEs important for assembly
+te-data.csv				data from FlyTE database used as predictors in GLM/GLMM
+
+# see assess-assembly repo for script to assess presence/absence of genomic features (i.e. the response variable for the GLMM)
