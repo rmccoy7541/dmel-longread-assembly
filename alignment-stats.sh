@@ -1,25 +1,31 @@
 #!/bin/bash
 
 #generate a nucmer alignment, using default parameters
-nucmer --mum $REFERENCE $ASSEMBLY > nucmer.log
-delta-filter -r out.delta > out.filter
-show-coords -rc out.filter > out.coords
+nucmer $REFERENCE $ASSEMBLY > nucmer.log
 
-# for each chromosome
-for i in X 2L 2R 3L 3R 4 XHet 2LHet 2RHet 3LHet 3RHet YHet M_iso1 U Uextra
+#filter to select only the best mapping of each contig to the reference
+~/progs/MUMmer3.23/delta-filter -q out.delta > out.q.delta
+
+#display alignments
+~/progs/MUMmer3.23/show-coords -THrcl out.q.delta
+
+# require alignments of at least 99% identity and 1000 bp
+~/progs/MUMmer3.23/show-coords -THrcl out.q.delta | awk '{if ($7>99 && $5>1000) print $12"\t"$1"\t"$2"\t"$13"\t"$11}' > nucmer.bed
+
+
+bedtools merge -i nucmer.bed > nucmer.merge.bed
+
+for i in X 2L 2R 3L 3R 4 XHet 2LHet 2RHet 3LHet 3RHet YHet M U
 do
-printf "\n\n$i\n"
+    echo $i
+# count the alignments
+    cat nucmer.bed | awk -v i=$i '{if ($1==i) print}' | cut -f4 | sort | uniq | wc -l
 
-# filter out only high stringency alignments, count alignments, gaps, and total length aligned, used to generate table 2
+# count the gaps: contiguous alignments minus 1, plus 2 for the ends of each alignment
+    bedtools complement -g ../../reference/dmel-quast-euchrom-heterochrom.genome -i nucmer.merge.bed > nucmer.complement.bed
+    cat nucmer.complement.bed | awk -v i=$i '{if ($1==i) print}' | wc -l
 
-cat out.coords | sed -e '1,5d' | awk '{if ($10>99 && $7>1000) print}' | awk -v ref="$i" '{if ($15==ref) print}' | awk '{print $16}' | sort | uniq | wc -l
-
-cat out.coords | sed -e '1,5d' | awk '{if ($10>99 && $7>1000) print}' | awk -v ref="$i" '{if ($15==ref) print $15"\t"$1"\t"$2}' | bedtools merge | awk '{print $3-$2}' | awk '{sum+=$1} END {print sum}'
-
-cat out.coords | sed -e '1,5d' | awk '{if ($10>99 && $7>1000) print}' | awk -v ref="$i" '{if ($15==ref) print $15"\t"$1-1"\t"$2-1}' | bedtools merge > $i.align
-
-bedtools complement -i $i.align -g dmel-all-chromosome-r5.53.genome | awk -v ref="$i" '{if ($1==ref) print}' | wc -l
-
-bedtools complement -i $i.align -g dmel-all-chromosome-r5.53.genome | awk -v ref="$i" '{if ($1==ref) print}'  >> gaps.bed 
-
+# sum the total aligned length
+    cat nucmer.merge.bed | awk -v i=$i '{if ($1==i) print $3-$2}' | awk '{sum+=$1} END {print sum}'
+    printf "\n\n"
 done
