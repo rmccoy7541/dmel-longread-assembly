@@ -1,8 +1,8 @@
 # de novo genome assembly
-run_wgs.sge	-- command used to run CA
-wgs_specfile.spec	-- specfile upon which CA depends
+run_wgs.sge -- command used to run CA
+wgs_specfile.spec -- specfile upon which CA depends
 melanogaster.frg -- frg file that gives additional parameters and points to fastq used for assembly
-run_minimus2.sh	-- script used to run minimus2
+run_minimus2.sh -- script used to run minimus2
 
 # analysis of long-read data
 extract_deletions.sh -- script that reformats CIGAR string and calls perl script to calculate positions of deletions in alignments.
