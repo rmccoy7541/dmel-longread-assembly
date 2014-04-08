@@ -1,17 +1,16 @@
 # de novo genome assembly
-run_wgs.sge				command used to run CA
-wgs_specfile.spec			specfile upon which CA depends
-melanogaster.frg			frg file that gives additional parameters and points to fastq used for assembly
-run_minimus2.sh				script used to run minimus2
-
+run_wgs.sge	-- command used to run CA
+wgs_specfile.spec	-- specfile upon which CA depends
+melanogaster.frg -- frg file that gives additional parameters and points to fastq used for assembly
+run_minimus2.sh	-- script used to run minimus2
 
 # analysis of long-read data
-extract_deletions.sh		script that reformats CIGAR string and calls perl script to calculate positions of deletions in alignments.
-generate_deletion_profile.pl		script required by extract_deletions.sh to get deletion positions from CIGAR string.
+extract_deletions.sh -- script that reformats CIGAR string and calls perl script to calculate positions of deletions in alignments.
+generate_deletion_profile.pl -- script required by extract_deletions.sh to get deletion positions from CIGAR string.
 
 # analysis of assembly
-alignment_stats.sh			commands used to generate alignment results for Table 2
-te_glm.R				R script to generate GLM and GLMM to test features of TEs important for assembly
-te_data.csv				data from FlyTE database used as predictors in GLM/GLMM
+alignment_stats.sh -- commands used to generate alignment results for Table 2
+te_glm.R -- R script to generate GLM and GLMM to test features of TEs important for assembly
+te_data.csv -- data from FlyTE database used as predictors in GLM/GLMM
 
 # see assess-assembly repository for script to assess presence/absence of genomic features (i.e. the response variable for the GLMM)
