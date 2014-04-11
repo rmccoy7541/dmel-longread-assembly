@@ -9,18 +9,19 @@ standardize <- function(x){
 	(x - mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
 }
 
-te.results <- read.table("~/Dropbox/fly assembly ms - genome research/analysis/TE-GLM/TE2/TE.results", sep = '\t', header = FALSE, stringsAsFactors = FALSE)
-te.data <- read.table("~/Dropbox/fly assembly ms - genome research/analysis/TE-GLM/TE2/TE-data2.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
+te.results <- read.table("TE.results", sep = '\t', header = FALSE, stringsAsFactors = FALSE)
+te.data <- read.table("TE-data.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
 
 names(te.results) <- c("name", "haveit")
 te.merge <- merge(te.results, te.data, by = "name", all.x = TRUE)
 te.merge$seqID <- as.numeric(gsub("%", "", te.merge$seqID))/100
 
+# remove synonyms for family names
 te.merge$family[te.merge$family=="DM88"]<-"Dm88"
 te.merge$family[te.merge$family=="Doc2-element"]<-"Doc2"
 te.merge$family[te.merge$family=="Doc3-element"]<-"Doc3"
 
-
+# calculate copy number per family
 families <- data.frame(table(te.merge$family))
 names(families) <- c("family", "copies")
 te.merge <- merge(te.merge, families, all.x = TRUE)
